@@ -15,4 +15,7 @@ public interface UserRepository extends CrudRepository<User, Long>
     // Spring will guarantee to return a list
     @Override
     public List<User> findAll();
+    
+    public List<User> findByFirstNameAndLastName(String firstName, String lastName);
+
 }

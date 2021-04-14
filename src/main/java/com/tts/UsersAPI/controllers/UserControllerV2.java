@@ -27,9 +27,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponses;
 import io.swagger.annotations.ApiResponse;
 
-
 @RestController
-@Api(value="users", description="Operations to view/create/update/delete users")
+@Api(value = "users", description = "Operations to view/create/update/delete users")
 @RequestMapping("/v2")
 public class UserControllerV2
 {
@@ -40,10 +39,8 @@ public class UserControllerV2
     // If user passes in query parameter for state, we find the user by state...
     // If user passes in no value, we find all users
     @ApiOperation(value = "Get all users, filtered by state", response = User.class, responseContainer = "List")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved users"),
-            @ApiResponse(code = 400, message = "Bad request, state parameter not provided")
-        })
+    @ApiResponses(value =
+    { @ApiResponse(code = 200, message = "Successfully retrieved users"), @ApiResponse(code = 400, message = "Bad request, state parameter not provided") })
     @GetMapping("/users")
     public ResponseEntity<List<User>> getUsers(@RequestParam(value = "state", required = true) String state)
     {
@@ -60,10 +57,8 @@ public class UserControllerV2
     // Find a user by id
     @GetMapping("/users/{id}")
     @ApiOperation(value = "Get a single user", response = User.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved menu items"),
-            @ApiResponse(code = 404, message = "User wasn't found")
-        })
+    @ApiResponses(value =
+    { @ApiResponse(code = 200, message = "Successfully retrieved menu items"), @ApiResponse(code = 404, message = "User wasn't found") })
     public ResponseEntity<Optional<User>> getUserById(@PathVariable(value = "id") Long id)
     {
         Optional<User> user = repository.findById(id);
@@ -78,18 +73,18 @@ public class UserControllerV2
     // Create a new user
     @PostMapping("/users")
     @ApiOperation(value = "Create a user", response = Void.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successfully created user"),
-            @ApiResponse(code = 400, message = "Bad request formatting or user exists")
-        })
+    @ApiResponses(value =
+    { @ApiResponse(code = 201, message = "Successfully created user"), @ApiResponse(code = 400, message = "Bad request formatting or user exists") })
     public ResponseEntity<Void> createUser(@RequestBody @Valid User user, BindingResult bindingResult)
     {
-
+        if(repository.findByFirstNameAndLastName(user.getFirstName(), user.getLastName()).size() != 0)
+        {
+            bindingResult.rejectValue("id", "error.id", "User id aleady exists");
+        }
         if(bindingResult.hasErrors())
         {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
         repository.save(user);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -97,11 +92,8 @@ public class UserControllerV2
     // Update an existing user by id
     @PutMapping("/users/{id}")
     @ApiOperation(value = "Update a user", response = Void.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "User updated successfully"),
-            @ApiResponse(code = 400, message = "Bad request formatting"),
-            @ApiResponse(code = 404, message = "User ID not found")
-        })
+    @ApiResponses(value =
+    { @ApiResponse(code = 200, message = "User updated successfully"), @ApiResponse(code = 400, message = "Bad request formatting"), @ApiResponse(code = 404, message = "User ID not found") })
     public ResponseEntity<Void> updateUser(@PathVariable(value = "id") Long id, @RequestBody User user, BindingResult bindingResult)
     {
 
@@ -124,10 +116,8 @@ public class UserControllerV2
     // Delete a user by id
     @DeleteMapping("/users/{id}")
     @ApiOperation(value = "Delete a user", response = Void.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "User deleted successfully"),
-            @ApiResponse(code = 404, message = "User ID not found")
-        })
+    @ApiResponses(value =
+    { @ApiResponse(code = 200, message = "User deleted successfully"), @ApiResponse(code = 404, message = "User ID not found") })
     public ResponseEntity<Void> deleteUser(@PathVariable(value = "id") Long id)
     {
         Optional<User> optUser = repository.findById(id);

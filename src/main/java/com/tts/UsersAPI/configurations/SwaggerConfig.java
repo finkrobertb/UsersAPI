@@ -18,7 +18,7 @@ public class SwaggerConfig
     public Docket apiV1()
     {
         return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("Version 1")
+        .groupName("Version 1")
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.tts.UsersAPI"))
                 .paths(PathSelectors.ant("/v1/**"))
@@ -29,7 +29,7 @@ public class SwaggerConfig
     public Docket apiV2()
     {
         return new Docket(DocumentationType.SWAGGER_2)
-                .groupName("Version 2")
+        .groupName("Version 2")
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.tts.UsersAPI"))
                 .paths(PathSelectors.ant("/v2/**"))
